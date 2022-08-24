@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% set title = "上传文件"%}
+{% block content %}
+<form action="{{ url_for('upload_file') }}" method=post enctype=multipart/form-data>
+    <fieldset style="height:200;width: 300px;">
+        <legend>文件上传:</legend>
+        <table>
+            <tr>
+                <div>
+                    <td align="right">
+                        <input type=file style="color:blue;" name=file>
+                    </td>
+                    <td>
+                        <input type=image src="/static/images/icon-upload-3.png" width="40" height="40"
+                            vertical-align:baseline value=上传>
+                    </td>
+                </div>
+            </tr>
+        </table>
+    </fieldset>
+
+</form>
+{% endblock%}

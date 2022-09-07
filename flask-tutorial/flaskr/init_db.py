@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, MetaData
 
-from settings import BASE_DIR, get_config
+from .settings import BASE_DIR, get_config
 from db import user, post
 
 

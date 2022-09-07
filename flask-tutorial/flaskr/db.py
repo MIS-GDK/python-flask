@@ -4,6 +4,8 @@ from flask.cli import with_appcontext
 import psycopg2
 from .settings import config
 
+from psycopg2 import extras  # 不能少
+
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 USER_DB_URL = DSN.format(**config["postgres"])
 
@@ -19,8 +21,9 @@ def get_db():
             port=config["postgres"]["port"],
         )
         g.db = conn
-        g.db_cur = conn.cursor()
-    return g.db_cur
+        g.db_cur = conn.cursor(cursor_factory=extras.DictCursor)
+    current_app.logger.debug(type(g))
+    return (g.db, g.db_cur)
 
 
 def close_db(e=None):
@@ -32,9 +35,15 @@ def close_db(e=None):
 
 
 def init_db():
-    db_cur = get_db()
+    db, db_cur = get_db()
     with current_app.open_resource("schema.sql") as f:
-        db_cur.execute(f.read().decode("utf8"))
+        db_cur.execute(f.read().decode("utf-8"))
+    db.commit()
+
+
+"""
+使用Click的command()装饰器添加命令，执行时不会自动推入应用上下文，要想达到同样的效果，增加with_appcontext装饰器
+"""
 
 
 @click.command("init-db")

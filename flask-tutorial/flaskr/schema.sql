@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS "user";
 
 CREATE TABLE "user" (
   id SERIAL PRIMARY KEY,
-  username TEXT UNIQUE NOT NULL,
+  username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL
 );
 

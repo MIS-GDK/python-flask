@@ -15,7 +15,7 @@ def create_app(test_config=None):
     if test_config is None:
         # load the  config, if it exists, when not testing
         # 使用 config.py 中的值来重载缺省配置，如果 config.py 存在的话。 例如，当正式部署的时候，用于设置一个正式的 SECRET_KEY
-        app.config.from_pyfile("config.py")
+        app.config.from_pyfile("config.py", silent=True)
         app.logger.warning(app.config["SECRET_KEY"])
         app.logger.warning("debug: {0}".format(app.config["DEBUG"]))
     else:

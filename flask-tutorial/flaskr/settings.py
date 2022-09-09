@@ -4,7 +4,7 @@ import yaml
 
 # from utils import TRAFARET
 
-BASE_DIR = pathlib.Path(__file__).parent.parent
+BASE_DIR = pathlib.Path(__file__).parent
 config_path = BASE_DIR / "config" / "polls.yaml"
 
 

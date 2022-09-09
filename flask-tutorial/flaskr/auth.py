@@ -9,6 +9,7 @@ from flask import (
     request,
     session,
     url_for,
+    current_app,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -41,15 +42,16 @@ def register():
         error = None
 
         if not username:
-            error = "Username is required."
-        elif not password:
-            error = "Password is required."
+            error = "Username is required"
+        if not password:
+            error = "Password is required"
 
-        if not error:
-            db, db_cur = get_db()
+        if error is None:
             try:
+                db, db_cur = get_db()
+
                 db_cur.execute(
-                    'INSERT INTO "user" (username, password) VALUES (%s,%s)',
+                    'insert into "user"(username,password) values (%s,%s)',
                     (username, generate_password_hash(password)),
                 )
                 db.commit()
@@ -58,7 +60,6 @@ def register():
             else:
                 return redirect(url_for("auth.login"))
         flash(error)
-
     return render_template("auth/register.html")
 
 
@@ -69,10 +70,10 @@ def login():
         password = request.form["password"]
 
         error = None
+
         db_cur = get_db()[1]
-        db_cur.execute('SELECT * FROM "user" WHERE username = %s', (username,))
+        db_cur.execute('select * from "user" where username = %s', (username,))
         user = db_cur.fetchone()
-        print(user)
         if user is None:
             error = "Incorrect username."
         elif not check_password_hash(user["password"], password):
@@ -81,10 +82,9 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user["id"]
-            return redirect(url_for("index"))
+            return redirect(url_for("blog.index"))
 
         flash(error)
-
     return render_template("auth/login.html")
 
 
@@ -102,9 +102,11 @@ def load_logged_in_user():
 
     if user_id is None:
         g.user = None
+        current_app.logger.warning("this is load_logged_in_user1")
     else:
         get_db()[1].execute('SELECT * FROM "user" WHERE id = %s', (user_id,))
         g.user = get_db()[1].fetchone()
+        current_app.logger.warning("this is load_logged_in_user2")
 
 
 """
@@ -127,10 +129,9 @@ def logout():
 
 def login_required(view):
     @functools.wraps(view)
-    def wrapped_view(**kwargs):
+    def wrapped_view(*args, **kwargs):
         if g.user is None:
             return redirect(url_for("auth.login"))
-
-        return view(**kwargs)
+        return view(*args, **kwargs)
 
     return wrapped_view

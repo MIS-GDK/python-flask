@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine, MetaData
+import os, sys, pathlib
 
-from .settings import BASE_DIR, get_config
 from db import user, post
 
+from flaskr.settings import BASE_DIR, get_config
 
 DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
 
@@ -17,12 +18,16 @@ ADMIN_DB_URL = DSN.format(
 admin_engine = create_engine(ADMIN_DB_URL, isolation_level="AUTOCOMMIT")
 
 USER_CONFIG_PATH = BASE_DIR / "config" / "polls.yaml"
-
+TEST_USER_CONFIG_PATH = BASE_DIR / "config" / "polls_test.yaml"
 print(USER_CONFIG_PATH)
+
 USER_CONFIG = get_config(USER_CONFIG_PATH)
+TEST_CONFIG = get_config(TEST_USER_CONFIG_PATH)
+
 USER_DB_URL = DSN.format(**USER_CONFIG["postgres"])
+TEST_DB_URL = DSN.format(**TEST_CONFIG["postgres"])
 user_engine = create_engine(USER_DB_URL)
-test_engine = None
+test_engine = create_engine(TEST_DB_URL)
 
 
 def setup_db(config):
@@ -95,9 +100,10 @@ def sample_data(engine=test_engine):
 
 
 if __name__ == "__main__":
+    pass
     # print(USER_CONFIG["postgres"])
-    # setup_db(USER_CONFIG["postgres"])
-    create_tables(engine=user_engine)
+    setup_db(TEST_CONFIG["postgres"])
+    # create_tables(engine=user_engine)
     # sample_data(engine=user_engine)
     # drop_tables(engine=user_engine)
     # teardown_db(USER_CONFIG['postgres'])

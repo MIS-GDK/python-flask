@@ -8,14 +8,14 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     # SECRET_KEY 是被 Flask 和扩展用于保证数据安全的。在开发 过程中，为了方便可以设置为 'dev' ，但是在发布的时候应当使用 一个随机值来重载它
     app.config.from_mapping(
-        SECRET_KEY="dev",
+        SECRET_KEY="7712a09b74f78bd374ea537faf0fb0b0e8a2e5cb7fa65d42104c8686c6f26aba",
         # DATABASE=os.path.join(app.instance_path, "flaskr.sqlite")
     )
 
     if test_config is None:
         # load the  config, if it exists, when not testing
         # 使用 config.py 中的值来重载缺省配置，如果 config.py 存在的话。 例如，当正式部署的时候，用于设置一个正式的 SECRET_KEY
-        app.config.from_pyfile("config.py", silent=True)
+        app.config.from_pyfile("config.py", silent=False)
         app.logger.warning(app.config["SECRET_KEY"])
         app.logger.warning("debug: {0}".format(app.config["DEBUG"]))
     else:

@@ -2,5 +2,6 @@ include flaskr/schema.sql
 include flaskr/config/polls.yaml
 graft flaskr/static
 graft flaskr/templates
-global-exclude .pyc
+global-exclude *.pyc
+
 

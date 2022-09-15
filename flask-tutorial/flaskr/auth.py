@@ -102,11 +102,9 @@ def load_logged_in_user():
 
     if user_id is None:
         g.user = None
-        current_app.logger.warning("this is load_logged_in_user1")
     else:
         get_db()[1].execute('SELECT * FROM "user" WHERE id = %s', (user_id,))
         g.user = get_db()[1].fetchone()
-        current_app.logger.warning("this is load_logged_in_user2")
 
 
 """
